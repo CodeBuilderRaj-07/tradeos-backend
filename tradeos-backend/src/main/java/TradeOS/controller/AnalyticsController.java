@@ -3,25 +3,74 @@ package com.TradeOS.controller;
 import com.TradeOS.analytics.AnalyticsService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
 @RestController
+@RequestMapping("/api/analytics")
 public class AnalyticsController {
 
     @Autowired
     private AnalyticsService analyticsService;
 
-    @GetMapping("/api/analytics")
-    public Map<String, Object> analytics(
+    @GetMapping("/summary")
+    public Map<String, Object> getSummary(
             HttpServletRequest request
     ) {
 
         String email =
                 (String) request.getAttribute("email");
 
-        return analyticsService.getAnalytics(email);
+        return analyticsService
+                .getDashboardSummary(email);
+    }
+
+    @GetMapping("/monthly-pnl")
+    public Map<String, Double> getMonthlyPnl(
+            HttpServletRequest request
+    ) {
+
+        String email =
+                (String) request.getAttribute("email");
+
+        return analyticsService
+                .getMonthlyPnl(email);
+    }
+
+    @GetMapping("/streaks")
+    public Map<String, Integer> getStreakAnalytics(
+            HttpServletRequest request
+    ) {
+
+        String email =
+                (String) request.getAttribute("email");
+
+        return analyticsService
+                .getStreakAnalytics(email);
+    }
+
+    @GetMapping("/risk-reward")
+    public Map<String, Double> getRiskRewardAnalytics(
+            HttpServletRequest request
+    ) {
+
+        String email =
+                (String) request.getAttribute("email");
+
+        return analyticsService
+                .getRiskRewardAnalytics(email);
+    }
+
+    @GetMapping("/drawdown")
+    public Map<String, Double> getDrawdownAnalytics(
+            HttpServletRequest request
+    ) {
+
+        String email =
+                (String) request.getAttribute("email");
+
+        return analyticsService
+                .getDrawdownAnalytics(email);
     }
 }

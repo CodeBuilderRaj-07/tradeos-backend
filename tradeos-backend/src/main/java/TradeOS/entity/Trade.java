@@ -1,6 +1,7 @@
 package com.TradeOS.entity;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "trades")
@@ -31,6 +32,8 @@ public class Trade {
     private String notes;
 
     private String userEmail;
+
+    private LocalDateTime createdAt;
 
     public Long getId() {
         return id;
@@ -122,5 +125,13 @@ public class Trade {
 
     public void setUserEmail(String userEmail) {
         this.userEmail = userEmail;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 }

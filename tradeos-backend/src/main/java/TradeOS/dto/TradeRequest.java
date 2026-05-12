@@ -1,19 +1,28 @@
 package com.TradeOS.dto;
 
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+
 public class TradeRequest {
 
+    @NotBlank(message = "Symbol is required")
     private String symbol;
 
+    @NotBlank(message = "Trade type is required")
     private String tradeType;
 
+    @Min(value = 1, message = "Entry price must be positive")
     private double entryPrice;
 
     private double exitPrice;
 
+    @Min(value = 1, message = "Stop loss must be positive")
     private double stopLoss;
 
+    @Min(value = 1, message = "Take profit must be positive")
     private double takeProfit;
 
+    @Min(value = 1, message = "Position size must be positive")
     private double positionSize;
 
     private double pnl;

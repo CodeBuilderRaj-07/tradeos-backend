@@ -21,7 +21,8 @@ public class TradeController {
 
     @PostMapping
     public String addTrade(
-            @RequestBody TradeRequest request,
+           @jakarta.validation.Valid
+           @RequestBody TradeRequest request,
             HttpServletRequest httpRequest
     ) {
 
@@ -40,6 +41,43 @@ public class TradeController {
                 (String) httpRequest.getAttribute("email");
 
         return tradeService.getUserTrades(email);
+    }
+
+    @GetMapping("/search")
+    public List<Trade> searchTrades(
+            @RequestParam String keyword,
+            HttpServletRequest httpRequest
+    ) {
+
+        String email =
+                (String) httpRequest.getAttribute("email");
+
+        return tradeService.searchTrades(
+                email,
+                keyword
+        );
+    }
+
+    @GetMapping("/oldest")
+    public List<Trade> getOldestTrades(
+            HttpServletRequest httpRequest
+    ) {
+
+        String email =
+                (String) httpRequest.getAttribute("email");
+
+        return tradeService.getOldestTrades(email);
+    }
+
+    @GetMapping("/highest-pnl")
+    public List<Trade> getHighestPnlTrades(
+            HttpServletRequest httpRequest
+    ) {
+
+        String email =
+                (String) httpRequest.getAttribute("email");
+
+        return tradeService.getHighestPnlTrades(email);
     }
 
     @GetMapping("/paged")
@@ -111,6 +149,19 @@ public class TradeController {
                 (String) httpRequest.getAttribute("email");
 
         return tradeService.getLatestTrades(email);
+    }
+
+    @GetMapping("/export")
+    public String exportTrades(
+            HttpServletRequest httpRequest
+    ) {
+
+        String email =
+                (String) httpRequest.getAttribute("email");
+
+        return tradeService.exportTradesToCsv(
+                email
+        );
     }
 
     @PutMapping("/{id}")

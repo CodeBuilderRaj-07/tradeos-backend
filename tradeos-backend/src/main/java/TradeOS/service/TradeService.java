@@ -5,11 +5,14 @@ import com.TradeOS.dto.TradeRequest;
 import com.TradeOS.dto.UpdateTradeRequest;
 import com.TradeOS.entity.Trade;
 import com.TradeOS.repository.TradeRepository;
+import com.opencsv.CSVWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.io.StringWriter;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -22,6 +25,34 @@ public class TradeService {
 
         return tradeRepository.findByUserEmail(email);
 
+    }
+
+    public List<Trade> searchTrades(
+            String email,
+            String keyword
+    ) {
+
+        return tradeRepository
+                .findByUserEmailAndSymbolContainingIgnoreCase(
+                        email,
+                        keyword
+                );
+    }
+
+    public List<Trade> getOldestTrades(
+            String email
+    ) {
+
+        return tradeRepository
+                .findByUserEmailOrderByIdAsc(email);
+    }
+
+    public List<Trade> getHighestPnlTrades(
+            String email
+    ) {
+
+        return tradeRepository
+                .findByUserEmailOrderByPnlDesc(email);
     }
 
     public Page<Trade> getPaginatedTrades(
@@ -90,6 +121,8 @@ public class TradeService {
         trade.setNotes(request.getNotes());
 
         trade.setUserEmail(email);
+
+        trade.setCreatedAt(LocalDateTime.now());
 
         tradeRepository.save(trade);
 
@@ -191,5 +224,61 @@ public class TradeService {
         tradeRepository.delete(trade);
 
         return "Trade Deleted Successfully";
+    }
+
+    public String exportTradesToCsv(
+            String email
+    ) {
+
+        List<Trade> trades =
+                tradeRepository.findByUserEmail(email);
+
+        StringWriter stringWriter =
+                new StringWriter();
+
+        CSVWriter writer =
+                new CSVWriter(stringWriter);
+
+        String[] header = {
+                "ID",
+                "SYMBOL",
+                "TYPE",
+                "ENTRY",
+                "EXIT",
+                "PNL",
+                "STATUS"
+        };
+
+        writer.writeNext(header);
+
+        for (Trade trade : trades) {
+
+            String[] row = {
+
+                    String.valueOf(trade.getId()),
+
+                    trade.getSymbol(),
+
+                    trade.getTradeType(),
+
+                    String.valueOf(
+                            trade.getEntryPrice()
+                    ),
+
+                    String.valueOf(
+                            trade.getExitPrice()
+                    ),
+
+                    String.valueOf(
+                            trade.getPnl()
+                    ),
+
+                    trade.getStatus()
+            };
+
+            writer.writeNext(row);
+        }
+
+        return stringWriter.toString();
     }
 }

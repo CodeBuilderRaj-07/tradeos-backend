@@ -21,17 +21,30 @@ public interface TradeRepository extends JpaRepository<Trade, Long> {
             String symbol
     );
 
-    Trade findByIdAndUserEmail(
-            Long id,
-            String userEmail
+    List<Trade> findByUserEmailAndSymbolContainingIgnoreCase(
+            String email,
+            String symbol
     );
 
     List<Trade> findTop5ByUserEmailOrderByIdDesc(
             String userEmail
     );
 
+    List<Trade> findByUserEmailOrderByIdAsc(
+            String email
+    );
+
+    List<Trade> findByUserEmailOrderByPnlDesc(
+            String email
+    );
+
     Page<Trade> findByUserEmailOrderByIdDesc(
             String userEmail,
             Pageable pageable
+    );
+
+    Trade findByIdAndUserEmail(
+            Long id,
+            String email
     );
 }
